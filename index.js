@@ -55,7 +55,7 @@ Category.prototype.run = function (yargs) {
         })
         .demand(self.path.length, 'Please enter a valid command.')
         .fail(errorHandler);
-    
+
     yargs.help('help');
         
     var argv = yargs.argv;
@@ -122,10 +122,25 @@ Command.prototype.run = function (yargs) {
 
 function createErrorHandler (yargs) {
     return function (err) {
-        yargs.showHelp();
-        
-        console.log((err.message || err).red);
-        process.exit(1);
+
+        // Due to how nested categories and commands keep re-evaluating argv property,
+        // which calls parseArgs(), which then throws Error in order to 
+        // show the help page, the Error is instead thrown multiple times and
+        // causes the error screen to render multiple times.
+        // This problem arose when I called yargs.exitProcess(false) to prevent yargs
+        // from exiting the process on error, in order to keep the prompt alive for new input.
+        if (!yargs.hasShownHelpScreen) {
+            yargs.showHelp();
+            console.log((err.message || err).red);
+            yargs.hasShownHelpScreen = true;
+        }
+
+        // Original code was to exit process here, but I forked the repo
+        // in order to replace it with an exception instead, which was
+        // yargs' own error handling behavior, but that resulted the
+        // multiple help pages as described above.
+//        throw new Error(err.message || err);
+//        process.exit(1);
     };
 }
 
