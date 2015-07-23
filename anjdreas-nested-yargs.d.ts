@@ -1,4 +1,4 @@
-// Type definitions for anjdreas-nested-yargs.js 1.0.1
+// Type definitions for anjdreas-nested-yargs.js 1.0.3
 // Project:0.6.0-1 
 // Definitions by: Andreas Gullberg Larsen <https://github.com/anjdreas>
 // Definitions: NOT UPLOADED YET
